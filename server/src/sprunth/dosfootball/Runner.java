@@ -10,9 +10,17 @@ public class Runner {
 
     public static void main(String [] args) {
 
-        graph = new DosGraph();
+        try {
+            DBReader dbReader = new DBReader();
+            dbReader.AddDataTest();
+        } catch (Exception e) {
+            System.out.println("DBReader Error: " + e);
+        }
 
-        SampleRun();
+
+        //graph = new DosGraph();
+
+        //SampleRun();
     }
 
     private static void SampleRun()
