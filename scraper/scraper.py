@@ -13,10 +13,20 @@ def main():
 	#		team = get_team_name(team)
 	#		player_list = get_players(team)
 	#		team_players_dict[team] = player_list
+	#		f = open(team + ".txt, 'wb')				#write a file named after the team name
+	#		for player in player_list:
+	#			f.write(player.encode("utf-8"))
+	#			newline = bytes("\n", 'utf-8')
+	#			f.write(newline)
 	team_links = get_teams_page_links(year_link_list[0])
 	print(team_links[0])
 	print(get_team_name(team_links[0]))
 	player_list = get_players(team_links[0])
+	f = open('out.txt', 'wb')
+	for player in player_list:
+		f.write(player.encode("utf-8"))
+		newline = bytes("\n", 'utf-8')
+		f.write(newline)
 
 def get_soup(url):
 	page = urlopen(url)				#get page to soupify
