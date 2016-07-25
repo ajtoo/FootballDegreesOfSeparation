@@ -72,6 +72,7 @@ def get_players(team_link):
 		if len(name) != 0:
 			name = entry_columns[1].contents[0]
 			players.append(name)
+			print(name); 								# for windows, type "chcp 65001" before running
 			#print(name.encode('utf-8', 'replace'))		#[DEBUG] #Note: printing certain chars ie \u010c or \xe3 makes python unhappy :(
 	return players
 
