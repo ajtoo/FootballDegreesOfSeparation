@@ -5,15 +5,18 @@ import java.util.*;
 public class DosGraph {
 
     public Map<String, Player> PlayerIndex;
+    public ArrayList<String> PlayerNames;
 
     public DosGraph() {
         PlayerIndex = new HashMap<>();
+        PlayerNames = new ArrayList<>();
     }
 
     public Player AddPlayer(String playerName)
     {
         Player p = new Player(playerName);
         PlayerIndex.put(playerName, p);
+        PlayerNames.add(playerName);
         return p;
     }
 
