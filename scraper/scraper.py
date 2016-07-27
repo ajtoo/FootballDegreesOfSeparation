@@ -1,5 +1,6 @@
 import bs4
 from urllib.request import urlopen
+import json
 
 BASE_URL = "http://www.footballsquads.co.uk/"
 
@@ -7,26 +8,19 @@ def main():
 	year_link_list = get_year_links()
 	#print(year_link_list)		#[DEBUG]
 	team_players_dict = {}
-	#for year_link in year_link_list:
-	#	team_links = get_teams_page_links(year_link)
-	#	for team in team_links:
-	#		team = get_team_name(team)
-	#		player_list = get_players(team)
-	#		team_players_dict[team] = player_list
-	#		f = open(team + ".txt, 'wb')				#write a file named after the team name
-	#		for player in player_list:
-	#			f.write(player.encode("utf-8"))
-	#			newline = bytes("\n", 'utf-8')
-	#			f.write(newline)
-	team_links = get_teams_page_links(year_link_list[0])
-	print(team_links[0])
-	print(get_team_name(team_links[0]))
-	player_list = get_players(team_links[0])
-	f = open('out.txt', 'wb')
-	for player in player_list:
-		f.write(player.encode("utf-8"))
-		newline = bytes("\n", 'utf-8')
-		f.write(newline)
+	for year_link in year_link_list:
+		team_links = get_teams_page_links(year_link)
+		for team in team_links:
+			team_name = get_team_name(team)
+			player_list = get_players(team)
+			team_players_dict[team_name] = player_list
+			#f = open(team_name.replace("|", "_") + ".txt", 'wb')				#write a file named after the team name
+			#for player in player_list:
+			#	f.write(player.encode("utf-8"))
+			#	newline = bytes("\n", 'utf-8')
+			#	f.write(newline)
+	with open('footballsquads.json', 'w') as file_pointer:
+		json.dump(team_players_dict, file_pointer)
 
 def get_soup(url):
 	page = urlopen(url)				#get page to soupify
@@ -68,12 +62,11 @@ def get_players(team_link):
 		entry_columns = player_entry.find_all('td')
 		if len(entry_columns) == 1:
 			break				#if we hit the "Players no longer at this club" header, stop
-		name = entry_columns[1].contents
-		if len(name) != 0:
-			name = entry_columns[1].contents[0]
+		name = entry_columns[1].string
+		if name != None:
+			name = entry_columns[1].string
+			name = name.replace('\n   ', "")
 			players.append(name)
-			print(name); 								# for windows, type "chcp 65001" before running
-			#print(name.encode('utf-8', 'replace'))		#[DEBUG] #Note: printing certain chars ie \u010c or \xe3 makes python unhappy :(
 	return players
 
 def get_team_name(team_link):
