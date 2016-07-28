@@ -1,13 +1,23 @@
 package sprunth.dosfootball;
 
-
+import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import spark.HaltException;
 import spark.QueryParamsMap;
 import spark.Spark;
+import sun.awt.image.ImageWatched;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
+
+import org.json.simple.JSONObject;
 
 public class Runner {
 
@@ -60,10 +70,10 @@ public class Runner {
 
     private static void SampleRun()
     {
-        LoadTestPlayerGraph();
+        LoadPlayerGraph();
 
-        Player start = graph.GetPlayer("p1");
-        Player end = graph.GetPlayer("p5");
+        Player start = graph.GetPlayer("Maicon");
+        Player end = graph.GetPlayer("Brian Rowe");
 
         ArrayList<Player> path = graph.FindDegreesOfSeparation(start, end);
 
@@ -107,7 +117,84 @@ public class Runner {
 
     private static void LoadPlayerGraph()
     {
-        throw new NotImplementedException();
+        JSONParser parser = new JSONParser();
+
+        try
+        {
+            //open file and parse into json object
+            JSONObject jsonObj = (JSONObject) parser.parse(new FileReader("footballsquads.json"));
+
+            //iterate over team entries
+            Iterator it = jsonObj.entrySet().iterator();
+            while(it.hasNext())
+            {
+                Map.Entry pair = (Map.Entry) it.next();
+                String teamName = (String) pair.getKey();
+                JSONArray playerArray = (JSONArray) pair.getValue();
+
+                AddPlayersFromTeam(playerArray);
+                LinkTeammates(playerArray, teamName);
+            }
+        }
+        catch(FileNotFoundException e)
+        {
+            System.out.println("ERROR: Data file not found");
+            e.printStackTrace();
+        }
+        catch(IOException e)
+        {
+            System.out.println("ERROR: Failed to read data file");
+            e.printStackTrace();
+        }
+        catch(ParseException e)
+        {
+            System.out.println("ERROR: Failed to parse data file");
+            e.printStackTrace();
+        }
+    }
+
+    private static void AddPlayersFromTeam(JSONArray playerArray)
+    {
+        //iterate over players in a given team and add them
+        Iterator playerIterator = playerArray.iterator();
+        while(playerIterator.hasNext())
+        {
+            String playerName = (String) playerIterator.next();
+            Player curPlayer;
+            if(graph.GetPlayer(playerName) == null)
+            {
+                curPlayer = graph.AddPlayer(playerName);
+            }
+            else
+            {
+                curPlayer = graph.GetPlayer(playerName);
+            }
+        }
+    }
+
+    private static void LinkTeammates(JSONArray playerArray, String teamName)
+    {
+        //iterate over teammates to add links
+        Iterator otherPlayerIterator = playerArray.iterator();
+        Iterator playerIterator = playerArray.iterator();
+        Player curPlayer;
+        while(playerIterator.hasNext())
+        {
+            String playerName = (String) playerIterator.next();
+            curPlayer = graph.GetPlayer(playerName);
+            while(otherPlayerIterator.hasNext())
+            {
+                String linkPlayerName = (String) otherPlayerIterator.next();
+                if(linkPlayerName.equals(playerName))   //don't link player to himself
+                {
+                    continue;
+                }
+
+                Player linkPlayer = graph.GetPlayer(linkPlayerName);        //player should always be in the graph because AddPlayersFromTeam goes first
+                curPlayer.AddTeamLink(teamName, linkPlayer);
+            }
+        }
+
     }
 
     private static void LoadTestPlayerGraph()
