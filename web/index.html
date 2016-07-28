@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Football Players Degrees of Separation</title>
+  <meta name="author" content="Sprunth">
+  <meta name="description" content="Football Players Degrees of Separation">
+  <meta name="keywords" content="football, degrees, separations">
+  <link rel="shortcut icon" href="favicon.ico" type="image/vnd.microsoft.icon">
+  <link rel="stylesheet" href="stylesheet.css" type="text/css">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.6/superhero/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+</head>
+
+<body>
+
+  <div class="page-header">
+    <div class="container">
+      <h1>
+      Degrees of Separation
+      <small>Football Players</small>
+   </h1>
+    </div>
+
+  </div>
+
+  <div class="container">
+    <div class="row formrow">
+      <div class="col-xs-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title"></h3>
+          </div>
+          <div class="panel-body">
+            <form id="playerinputform" class="form-horizontal">
+              <fieldset>
+
+                <!-- Form Name -->
+                <legend>Enter Two Players' Names</legend>
+
+                <!-- Search input-->
+                <div class="form-group">
+                  <label class="col-md-4 control-label" for="firstplayerinput">First Player</label>
+                  <div class="col-md-4">
+                    <input id="firstplayerinput" name="searchinput" type="text" placeholder="First Player" class="form-control input-md" data-provide="typeahead" autocomplete="off">
+                    <!--              <p class="help-block">help</p>-->
+                  </div>
+                </div>
+
+                <!-- Search input-->
+                <div class="form-group">
+                  <label class="col-md-4 control-label" for="secondplayerinput">Second Player</label>
+                  <div class="col-md-4">
+                    <input id="secondplayerinput" name="searchinput" type="search" placeholder="Second Player" class="form-control input-md">
+                    <!--              <p class="help-block">help</p>-->
+                  </div>
+                </div>
+
+                <hr>
+
+                <!-- Button -->
+                <div class="form-group">
+                  <label class="col-md-4 control-label" for="singlebutton">Find Degrees of Separation</label>
+                  <div class="col-md-4">
+                    <button id="calculatebutton" name="singlebutton" class="btn btn-primary" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'></i> Calculating">Calculate!</button>
+                  </div>
+                </div>
+
+              </fieldset>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row resultrow">
+
+      <div class="col-md-offset-3 col-md-6">
+        <div id="resultpanel" class="panel panel-success collapse">
+          <div class="panel-heading">
+            <h3 class="panel-title">Result</h3>
+          </div>
+          <div class="panel-body">
+            <p id="resultheader"></p>
+            <p id="pathtext"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row errorrow">
+
+      <div class="col-md-offset-3 col-md-6">
+        <div id="errorpanel" class="panel panel-danger collapse">
+          <div class="panel-heading">
+            <h3 class="panel-title">Server is Too Busy!</h3>
+          </div>
+          <div class="panel-body">
+            <p>Please try again later!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <p class="text-muted">Copyright &copy; Sprunth 2016 | Comments? Send a <a href="https://www.reddit.com/message/compose/?to=sprunth">PM</a> on Reddit</p>
+    </div>
+  </footer>
+
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.1/bootstrap3-typeahead.min.js"></script>
+  <script type="text/javascript" src="app.js"></script>
+</body>
+
+</html>
