@@ -34,8 +34,10 @@ public class Runner {
     }
 
     private static void SetupWebEndPoints() {
+        CorsFilter.apply();
+
         Spark.get("/AllPlayers", (req, resp) -> {
-            return graph.PlayerNames;
+            return graph.PlayerNamesWithQuotes;
         });
 
         Spark.get("/DegreeOfSeparation", (req, resp) -> {

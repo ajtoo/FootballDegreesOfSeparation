@@ -20,6 +20,7 @@ def cleanup(json_filepath):
                 continue
 
             playername = playername.replace("\n", "")
+            playername = playername.replace("\"", "\'")
             playername = ' '.join(playername.split())
             cleaned_up_data[teamname].append(playername)
 
