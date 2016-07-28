@@ -1,5 +1,5 @@
 /*jslint browser: true*/
-/*global $, jQuery, alert, console*/
+/*global $, jQuery, alert, console, xhr, createBloodhound*/
 
 var onReceivePath = function (data) {
   "use strict";
@@ -22,8 +22,59 @@ var onServerBusy = function () {
 $(document).ready(function () {
   "use strict";
 
-  $("#firstplayerinput").typeahead({
-    source: ["asdf", "ahgh", "aee", "avc", "qwerty", "zxcv"]
+  //  xhr('GET', 'http://localhost:4567/AllPlayers')
+  //    .success(function (data) {
+  //      
+  //    });
+
+  $.ajax({
+    url: 'http://localhost:4567/AllPlayers',
+    success: function (data) {
+      var nameArray = JSON.parse(data);
+      var playerNames = new Bloodhound({
+        datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+        queryTokenizer: queryTokenizer,
+        local: $.map(nameArray, function (name) {
+          // Normalize the name - use this for searching
+          var normalized = normalize(name);
+          return {
+            value: normalized,
+            // Include the original name - use this for display purposes
+            displayValue: name
+          };
+        })
+      });
+
+      playerNames.initialize();
+      $('#firstplayerinput').typeahead({
+        minLength: 1,
+        hint: false
+      }, {
+        displayKey: 'displayValue',
+        source: playerNames.ttAdapter(),
+        limit: 6,
+        templates: {
+          suggestion: function (data) {
+            return "<li class='list-unstyled text-success'>" + data.displayValue + "</li>";
+          }
+        }
+      });
+      $('#secondplayerinput').typeahead({
+        minLength: 1,
+        hint: false
+      }, {
+        displayKey: 'displayValue',
+        source: playerNames.ttAdapter(),
+        limit: 6,
+        templates: {
+          suggestion: function (data) {
+            return "<li class='list-unstyled text-success'>" + data.displayValue + "</li>";
+          }
+        }
+      });
+
+    },
+    type: 'GET'
   });
 
   $('#calculatebutton').on('click', function (e) {
