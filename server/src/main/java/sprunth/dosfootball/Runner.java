@@ -63,9 +63,10 @@ public class Runner {
 
             ArrayList<Player> path = graph.FindDegreesOfSeparation(p1, p2);
 
-            String pathString = GetPathString(path);
+            if (path.size() > 0)
+                return GetPathString(path);
 
-            return pathString;
+            return "No Path Found";
         });
     }
 
