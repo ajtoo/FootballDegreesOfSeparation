@@ -73,6 +73,7 @@ public class Runner {
         LoadPlayerGraph();
 
         Player start = graph.GetPlayer("Maicon");
+        Player link = graph.GetPlayer("Ashley Cole");
         Player end = graph.GetPlayer("Brian Rowe");
 
         ArrayList<Player> path = graph.FindDegreesOfSeparation(start, end);
@@ -175,13 +176,14 @@ public class Runner {
     private static void LinkTeammates(JSONArray playerArray, String teamName)
     {
         //iterate over teammates to add links
-        Iterator otherPlayerIterator = playerArray.iterator();
+
         Iterator playerIterator = playerArray.iterator();
         Player curPlayer;
         while(playerIterator.hasNext())
         {
             String playerName = (String) playerIterator.next();
             curPlayer = graph.GetPlayer(playerName);
+            Iterator otherPlayerIterator = playerArray.iterator();
             while(otherPlayerIterator.hasNext())
             {
                 String linkPlayerName = (String) otherPlayerIterator.next();
