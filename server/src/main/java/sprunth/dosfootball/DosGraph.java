@@ -40,7 +40,7 @@ public class DosGraph {
         // returns empty list if no possible path
 
         Queue<ArrayList<Player>> queue = new LinkedList<>();
-        ArrayList<Player> initialPath = new ArrayList<Player>();
+        ArrayList<Player> initialPath = new ArrayList<>();
         initialPath.add(p1);
         queue.add(initialPath);
         while (!queue.isEmpty()) {

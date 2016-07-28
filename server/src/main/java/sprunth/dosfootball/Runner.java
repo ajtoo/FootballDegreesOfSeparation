@@ -27,7 +27,8 @@ public class Runner {
 
         graph = new DosGraph();
 
-        SampleRun();
+        // SampleRun();
+        LoadPlayerGraph();
 
         SetupWebEndPoints();
     }
@@ -92,11 +93,17 @@ public class Runner {
             Player nextPlayer = path.get(i+1);
 
             sb.append(currentPlayer.Name);
-            sb.append(" \u2192 ");
-            sb.append(currentPlayer.TeamLinks.get(nextPlayer));
-            sb.append(" \u2192 ");
+            if (i == 0)
+                sb.append(" was at ");
+            else
+                sb.append(" who was at ");
+            sb.append(nextPlayer.TeamLinks.get(currentPlayer));
+            sb.append(" with ");
         }
         sb.append(path.get(path.size()-1).Name);
+        sb.append(" who was also at ");
+        sb.append(path.get(path.size()-2).TeamLinks.get(path.get(path.size()-1)));
+
         return sb.toString();
     }
 
