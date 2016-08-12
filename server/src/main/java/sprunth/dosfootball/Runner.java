@@ -85,6 +85,16 @@ public class Runner {
         System.out.print("Degrees of Seperation: ");
         System.out.println(path.size() - 1);
 
+        ArrayList<String> nameList = new ArrayList<String>();
+        nameList.add("Jonathan");
+        nameList.add("Johnson");
+        nameList.add("Bob");
+
+        TrieNode root = new TrieNode();
+        root.populateTree(nameList);
+
+        System.out.println("populated tree...");
+
         PrintPath(path);
     }
 
