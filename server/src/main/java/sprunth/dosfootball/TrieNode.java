@@ -36,30 +36,24 @@ public class TrieNode
 
     public void insert(String toInsert)
     {
-        if(toInsert.equals(nodeVal) || nodeVal.length() == toInsert.length())      //return condition
+        if(toInsert.equals(nodeVal))    //check if this is the node the string belongs to
         {
             return;
         }
-        else if(toInsert.charAt(nodeVal.length()) == nodeChar)     //if we've traversed down the correct node
-        {
-            //check each of the child nodes
-            for(TrieNode curNode : children)
-            {
-                if(curNode.nodeChar == toInsert.charAt(nodeVal.length()+1)) //if the node has the next char
-                {
-                    curNode.insert(toInsert);
-                }
-            }
-        }
-        else if(children.isEmpty() || nodeChar == '\0')     //if we hit the last node and the string is not finished or are at the root
-        {
-            //made a new node with 1 more char from the string
-            TrieNode newNode = new TrieNode(toInsert.charAt(nodeVal.length()), toInsert.substring(0, nodeVal.length()+1));
-            children.add(newNode);
-            newNode.insert(toInsert);
-        }
 
-        //if we get here, we have a big problem
+        int nextCharIndex = nodeVal.length();
+        TrieNode nextNode = findChildWithChar(toInsert.charAt(nextCharIndex));
+        if(nextNode != null)
+        {
+            nextNode.insert(toInsert);
+        }
+        else
+        {
+            //create the next node and continue
+            nextNode = new TrieNode(toInsert.charAt(nextCharIndex), toInsert.substring(0, nextCharIndex+1));
+            children.add(nextNode);
+            nextNode.insert(toInsert);
+        }
     }
 
     public TrieNode search(String target)
@@ -68,16 +62,12 @@ public class TrieNode
         {
             return this;
         }
-        else if(nodeChar == target.charAt(nodeVal.length()) || nodeChar == '\0')    //if you're continuing to traverse or at root
+
+        int nextCharIndex = nodeVal.length();
+        TrieNode nextNode = findChildWithChar(target.charAt(nextCharIndex));
+        if(nextNode != null)
         {
-            for(ListIterator<TrieNode> it = children.listIterator(); it.hasNext(); )    //checking every child
-            {
-                TrieNode curChild = it.next();
-                if(target.charAt(nodeVal.length() + 1) == curChild.nodeChar)    //if the child node has the next letter in the string
-                {
-                    curChild.search(target);    //continue the search at the next level
-                }
-            }
+            return nextNode.search(target);
         }
 
         //if mismatch or only partial string, not found and return null
@@ -122,5 +112,18 @@ public class TrieNode
         }
     }
 
+    private TrieNode findChildWithChar(char target)
+    {
+        TrieNode curNode = null;
+        for(ListIterator<TrieNode> it = children.listIterator(); it.hasNext(); )
+        {
+            curNode = it.next();
+            if(curNode.nodeChar == target)
+            {
+                return curNode;
+            }
+        }
 
+        return  null;    //will return as null if nothing is found
+    }
 }

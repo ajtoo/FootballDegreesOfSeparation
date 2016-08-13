@@ -89,12 +89,23 @@ public class Runner {
         nameList.add("Jonathan");
         nameList.add("Johnson");
         nameList.add("Bob");
+        nameList.add("Januzaj");
+        nameList.add("Ben");
 
         TrieNode root = new TrieNode();
         root.populateTree(nameList);
 
-        System.out.println("populated tree...");
+        ArrayList<String> suggestions = root.topSuggestions("B");
 
+        System.out.println("Suggesting...");
+        for(String suggestion : suggestions)
+        {
+            System.out.println(suggestion);
+        }
+
+        TrieNode searchResult = root.search("Januzaj");
+        boolean success = (searchResult != null);
+        System.out.println("Search status..." + success);
         PrintPath(path);
     }
 
