@@ -10,6 +10,7 @@ public class TrieNode
 {
     char nodeChar;              //character of the current node
     String nodeVal;             //store string or prefix string here
+    String leafStr;             //if this is a leaf node, store the full name here
     List<TrieNode> children;    //child nodes, will be
 
     public TrieNode()
@@ -30,14 +31,20 @@ public class TrieNode
     {
         for(String player : playerList)
         {
-            insert(player);
+            String[] stringParts = player.split(" ");
+            for(String item : stringParts)
+            {
+                insert(item, player);
+            }
+
         }
     }
 
-    public void insert(String toInsert)
+    public void insert(String toInsert, String fullName)
     {
         if(toInsert.equals(nodeVal))    //check if this is the node the string belongs to
         {
+            leafStr = fullName;
             return;
         }
 
@@ -45,14 +52,14 @@ public class TrieNode
         TrieNode nextNode = findChildWithChar(toInsert.charAt(nextCharIndex));
         if(nextNode != null)
         {
-            nextNode.insert(toInsert);
+            nextNode.insert(toInsert, fullName);
         }
         else
         {
             //create the next node and continue
             nextNode = new TrieNode(toInsert.charAt(nextCharIndex), toInsert.substring(0, nextCharIndex+1));
             children.add(nextNode);
-            nextNode.insert(toInsert);
+            nextNode.insert(toInsert, fullName);
         }
     }
 
@@ -73,6 +80,8 @@ public class TrieNode
         //if mismatch or only partial string, not found and return null
         return null;
     }
+
+
 
     public ArrayList<String> topSuggestions(String input)
     {
@@ -99,7 +108,7 @@ public class TrieNode
         }
         if(children.isEmpty())    //if we hit a leaf node
         {
-            fromPrefix.add(nodeVal);
+            fromPrefix.add(leafStr);
             return;
         }
         else    //otherwise, traverse down a child node

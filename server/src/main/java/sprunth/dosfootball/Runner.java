@@ -1,5 +1,6 @@
 package sprunth.dosfootball;
 
+import javafx.util.Pair;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -27,8 +28,14 @@ public class Runner {
 
         graph = new DosGraph();
 
+<<<<<<< f764d951583cf21d0e26890af8fed92cb1848ad3
         // SampleRun();
         LoadPlayerGraph();
+=======
+        //SampleRun();
+        LoadPlayerGraph();
+
+>>>>>>> Trie returns full names from leaves
 
         SetupWebEndPoints();
     }
@@ -86,11 +93,11 @@ public class Runner {
         System.out.println(path.size() - 1);
 
         ArrayList<String> nameList = new ArrayList<String>();
-        nameList.add("Jonathan");
-        nameList.add("Johnson");
-        nameList.add("Bob");
-        nameList.add("Januzaj");
-        nameList.add("Ben");
+        nameList.add("Sam Johnstone");
+        nameList.add("Ashley Cole");
+        nameList.add("Daley Blind");
+        nameList.add("Adnan Januzaj");
+        nameList.add("Ben Amos");
 
         TrieNode root = new TrieNode();
         root.populateTree(nameList);
