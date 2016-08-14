@@ -23,19 +23,15 @@ import org.json.simple.JSONObject;
 public class Runner {
 
     private static DosGraph graph;
+    private static TrieNode root;
 
     public static void main(String [] args) {
 
         graph = new DosGraph();
+        root = new TrieNode();
 
-<<<<<<< f764d951583cf21d0e26890af8fed92cb1848ad3
         // SampleRun();
         LoadPlayerGraph();
-=======
-        //SampleRun();
-        LoadPlayerGraph();
-
->>>>>>> Trie returns full names from leaves
 
         SetupWebEndPoints();
     }
@@ -77,6 +73,7 @@ public class Runner {
 
             return "No Path Found";
         });
+        
     }
 
     private static void SampleRun()
@@ -203,6 +200,7 @@ public class Runner {
             if(graph.GetPlayer(playerName) == null)
             {
                 curPlayer = graph.AddPlayer(playerName);
+                root.insert(playerName);                    //add new name into prefix tree for every new player
             }
             else
             {

@@ -39,6 +39,14 @@ public class TrieNode
 
         }
     }
+    public void insert(String fullName)
+    {
+        String[] stringParts = fullName.split(" ");
+        for(String item : stringParts)
+        {
+            insert(item, fullName);
+        }
+    }
 
     public void insert(String toInsert, String fullName)
     {
