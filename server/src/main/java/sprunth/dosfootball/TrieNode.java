@@ -1,7 +1,10 @@
 package sprunth.dosfootball;
 
+import com.google.gson.Gson;
+import org.json.simple.JSONObject;
 import sun.text.normalizer.Trie;
 
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
@@ -44,7 +47,8 @@ public class TrieNode
         String[] stringParts = fullName.split(" ");
         for(String item : stringParts)
         {
-            insert(item, fullName);
+            String normalized = normalizeChars(item);
+            insert(normalized, fullName);
         }
     }
 
@@ -91,7 +95,7 @@ public class TrieNode
 
 
 
-    public ArrayList<String> topSuggestions(String input)
+    public String topSuggestions(String input)
     {
         ArrayList<String> retList = new ArrayList<String>();   //return null if there are no similar string
 
@@ -104,8 +108,7 @@ public class TrieNode
             prefixNode.getLeafStrings(retList);
         }
 
-
-        return retList;
+        return new Gson().toJson(retList);
     }
 
     private void getLeafStrings(ArrayList<String> fromPrefix)    //return strings with the prefix indicated by this node
@@ -116,7 +119,11 @@ public class TrieNode
         }
         if(children.isEmpty())    //if we hit a leaf node
         {
-            fromPrefix.add(leafStr);
+            if(!fromPrefix.contains(leafStr))
+            {
+                fromPrefix.add(leafStr);
+            }
+
             return;
         }
         else    //otherwise, traverse down a child node
@@ -142,5 +149,11 @@ public class TrieNode
         }
 
         return  null;    //will return as null if nothing is found
+    }
+
+    //http://stackoverflow.com/questions/3322152/
+    public String normalizeChars(String str)
+    {
+        return Normalizer.normalize(str, Normalizer.Form.NFD).replaceAll("\\p{M}", "");
     }
 }

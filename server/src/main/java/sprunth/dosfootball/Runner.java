@@ -30,7 +30,7 @@ public class Runner {
         graph = new DosGraph();
         root = new TrieNode();
 
-        // SampleRun();
+        //SampleRun();
         LoadPlayerGraph();
 
         SetupWebEndPoints();
@@ -73,11 +73,18 @@ public class Runner {
 
             return "No Path Found";
         });
-        
+
+        Spark.get("/Suggest", (req, resp) -> {
+            String baseStr = req.params("baseStr");
+            return root.topSuggestions(baseStr);
+        });
     }
 
     private static void SampleRun()
     {
+        TrieNode root = new TrieNode();
+        String convertTest = root.normalizeChars("Mandžukić");
+        System.out.println(convertTest);
         LoadPlayerGraph();
 
         Player start = graph.GetPlayer("Maicon");
@@ -95,17 +102,16 @@ public class Runner {
         nameList.add("Daley Blind");
         nameList.add("Adnan Januzaj");
         nameList.add("Ben Amos");
+        nameList.add("Mario Mandžukić");
+        nameList.add("Martín Cáceres");
 
-        TrieNode root = new TrieNode();
+
         root.populateTree(nameList);
 
-        ArrayList<String> suggestions = root.topSuggestions("B");
+       String suggestions = root.topSuggestions("M");
 
         System.out.println("Suggesting...");
-        for(String suggestion : suggestions)
-        {
-            System.out.println(suggestion);
-        }
+        System.out.println(suggestions);
 
         TrieNode searchResult = root.search("Januzaj");
         boolean success = (searchResult != null);
