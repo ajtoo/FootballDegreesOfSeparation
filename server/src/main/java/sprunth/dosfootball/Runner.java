@@ -31,7 +31,11 @@ public class Runner {
         root = new TrieNode();
 
         //SampleRun();
+        long startTime = System.nanoTime();
         LoadPlayerGraph();
+        long endTime = System.nanoTime();
+        long duration = (endTime - startTime)/1000000;
+        System.out.println("Populated graph and Trie in " + duration + " ms");
 
         SetupWebEndPoints();
     }
