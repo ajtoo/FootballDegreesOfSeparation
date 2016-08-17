@@ -79,8 +79,15 @@ public class Runner {
         });
 
         Spark.get("/Suggest", (req, resp) -> {
-            String baseStr = req.params("baseStr");
-            return root.topSuggestions(baseStr);
+            Set<String> queryParams = req.queryParams();
+            QueryParamsMap queryValues = req.queryMap();
+            if (!queryParams.contains("baseStr")){
+                // invalid request
+                Spark.halt(400, "Invalid Request");
+            }
+            String baseStr = queryValues.value("baseStr");
+            String ret = root.topSuggestions(baseStr);
+            return ret;
         });
     }
 
