@@ -13,12 +13,13 @@ public class TrieNode
 {
     char nodeChar;              //character of the current node
     String nodeVal;             //store string or prefix string here
-    String leafStr;             //if this is a leaf node, store the full name here
+    List<String> names;         //list of names with this node's mapping
     List<TrieNode> children;    //child nodes, will be
 
     public TrieNode()
     {
         children = new ArrayList<TrieNode>();
+        names = new ArrayList<String>();
         nodeChar = '\0';
         nodeVal = "";
     }
@@ -26,6 +27,7 @@ public class TrieNode
     public TrieNode(char nodeLabel, String prefix)
     {
         children = new ArrayList<TrieNode>();
+        names = new ArrayList<String>();
         nodeChar = nodeLabel;
         nodeVal = prefix;
     }
@@ -47,7 +49,7 @@ public class TrieNode
         String[] stringParts = fullName.split(" ");
         for(String item : stringParts)
         {
-            String normalized = normalizeChars(item);
+            String normalized = normalizeChars(item).toLowerCase();
             insert(normalized, fullName);
         }
     }
@@ -56,7 +58,10 @@ public class TrieNode
     {
         if(toInsert.equals(nodeVal))    //check if this is the node the string belongs to
         {
-            leafStr = fullName;
+            if(!names.contains(fullName))
+            {
+                names.add(fullName);
+            }
             return;
         }
 
@@ -119,9 +124,12 @@ public class TrieNode
         }
         if(children.isEmpty())    //if we hit a leaf node
         {
-            if(!fromPrefix.contains(leafStr))
+            for(String entry : names)   //loop through the list of names at the leaf node
             {
-                fromPrefix.add(leafStr);
+                if(!fromPrefix.contains(entry))
+                {
+                    fromPrefix.add(entry);
+                }
             }
 
             return;

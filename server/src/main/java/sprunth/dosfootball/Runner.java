@@ -36,7 +36,6 @@ public class Runner {
         long endTime = System.nanoTime();
         long duration = (endTime - startTime)/1000000;
         System.out.println("Populated graph and Trie in " + duration + " ms");
-
         SetupWebEndPoints();
     }
 

@@ -38,8 +38,6 @@ $(document).ready(function () {
     remote: {
       url: 'http://localhost:4567/Suggest',
       prepare: function (query, settings) {
-        //        console.log(settings);
-        //        query = "baseStr=" + $('#firstplayerinput').val();
         settings.url += "?baseStr=" + query;
         return settings;
       }
