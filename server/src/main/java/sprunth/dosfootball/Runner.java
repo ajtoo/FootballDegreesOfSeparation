@@ -1,5 +1,6 @@
 package sprunth.dosfootball;
 
+import javafx.util.Pair;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -22,14 +23,19 @@ import org.json.simple.JSONObject;
 public class Runner {
 
     private static DosGraph graph;
+    private static TrieNode root;
 
     public static void main(String [] args) {
 
         graph = new DosGraph();
+        root = new TrieNode();
 
-        // SampleRun();
+        //SampleRun();
+        long startTime = System.nanoTime();
         LoadPlayerGraph();
-
+        long endTime = System.nanoTime();
+        long duration = (endTime - startTime)/1000000;
+        System.out.println("Populated graph and Trie in " + duration + " ms");
         SetupWebEndPoints();
     }
 
@@ -70,10 +76,25 @@ public class Runner {
 
             return "No Path Found";
         });
+
+        Spark.get("/Suggest", (req, resp) -> {
+            Set<String> queryParams = req.queryParams();
+            QueryParamsMap queryValues = req.queryMap();
+            if (!queryParams.contains("baseStr")){
+                // invalid request
+                Spark.halt(400, "Invalid Request");
+            }
+            String baseStr = queryValues.value("baseStr");
+            String ret = root.topSuggestions(baseStr);
+            return ret;
+        });
     }
 
     private static void SampleRun()
     {
+        TrieNode root = new TrieNode();
+        String convertTest = root.normalizeChars("Mandžukić");
+        System.out.println(convertTest);
         LoadPlayerGraph();
 
         Player start = graph.GetPlayer("Maicon");
@@ -85,6 +106,26 @@ public class Runner {
         System.out.print("Degrees of Seperation: ");
         System.out.println(path.size() - 1);
 
+        ArrayList<String> nameList = new ArrayList<String>();
+        nameList.add("Sam Johnstone");
+        nameList.add("Ashley Cole");
+        nameList.add("Daley Blind");
+        nameList.add("Adnan Januzaj");
+        nameList.add("Ben Amos");
+        nameList.add("Mario Mandžukić");
+        nameList.add("Martín Cáceres");
+
+
+        root.populateTree(nameList);
+
+       String suggestions = root.topSuggestions("M");
+
+        System.out.println("Suggesting...");
+        System.out.println(suggestions);
+
+        TrieNode searchResult = root.search("Januzaj");
+        boolean success = (searchResult != null);
+        System.out.println("Search status..." + success);
         PrintPath(path);
     }
 
@@ -175,6 +216,7 @@ public class Runner {
             if(graph.GetPlayer(playerName) == null)
             {
                 curPlayer = graph.AddPlayer(playerName);
+                root.insert(playerName);                    //add new name into prefix tree for every new player
             }
             else
             {
