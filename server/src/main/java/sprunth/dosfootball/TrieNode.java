@@ -98,31 +98,59 @@ public class TrieNode
         return null;
     }
 
-
-
     public String topSuggestions(String input)
     {
-        ArrayList<String> retList = new ArrayList<String>();   //return null if there are no similar string
-
         //find the node that matches the prefix (input)
         String searchStr = input.toLowerCase();
-        TrieNode prefixNode = search(searchStr);
 
-        if(prefixNode != null)
+        //if there is a space, split and find the two parts
+        String[] stringParts = searchStr.split(" ");
+
+        if(stringParts.length > 1)
         {
-            //find all the leaf nodes liked to that node
-            prefixNode.getLeafStrings(retList);
-        }
+            ArrayList<String> search1 = new ArrayList<String>();    //first name search results
+            ArrayList<String> search2 = new ArrayList<String>();    //last name search results
 
-        return new Gson().toJson(retList);
+            //TODO: sanity check these...or do something since pos [0] and [1] not necessarily a given
+            //search the second word then match with the first word
+            TrieNode firstNameNode = search(stringParts[0]);
+            TrieNode lastNameNode = search(stringParts[1]);
+            if(firstNameNode != null && lastNameNode != null)
+            {
+                //find all the leaf nodes liked to that node
+                firstNameNode.getLeafStrings(search1);
+                lastNameNode.getLeafStrings(search2);
+            }
+
+            ArrayList<String> retList = new ArrayList<String>();
+            for(String entry : search1)
+            {
+                if(search2.contains(entry))
+                {
+                    retList.add(entry);
+                }
+            }
+
+
+            return new Gson().toJson(retList);
+        }
+        else
+        {
+            ArrayList<String> retList = new ArrayList<String>();   //return null if there are no similar string
+            TrieNode prefixNode = search(searchStr);
+
+            if(prefixNode != null)
+            {
+                //find all the leaf nodes liked to that node
+                prefixNode.getLeafStrings(retList);
+            }
+
+            return new Gson().toJson(retList);
+        }
     }
 
     private void getLeafStrings(ArrayList<String> fromPrefix)    //return strings with the prefix indicated by this node
     {
-        if(fromPrefix.size() == 7)      //modification because we only need a few suggestions
-        {
-            return;
-        }
         if(children.isEmpty())    //if we hit a leaf node
         {
             for(String entry : names)   //loop through the list of names at the leaf node

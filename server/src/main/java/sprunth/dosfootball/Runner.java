@@ -30,12 +30,14 @@ public class Runner {
         graph = new DosGraph();
         root = new TrieNode();
 
+        System.out.print("Populating data structures...");
         //SampleRun();
         long startTime = System.nanoTime();
         LoadPlayerGraph();
         long endTime = System.nanoTime();
+
         long duration = (endTime - startTime)/1000000;
-        System.out.println("Populated graph and Trie in " + duration + " ms");
+        System.out.println("duration: " + duration + "ms");
         SetupWebEndPoints();
     }
 
