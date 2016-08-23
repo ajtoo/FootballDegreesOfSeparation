@@ -36,7 +36,7 @@ $(document).ready(function () {
     queryTokenizer: Bloodhound.tokenizers.whitespace,
     datumTokenizer: Bloodhound.tokenizers.whitespace,
     remote: {
-      url: 'http://localhost:4567/Suggest',
+      url: 'http://54.164.112.121:4567/Suggest',
       prepare: function (query, settings) {
         settings.url += "?baseStr=" + query;
         return settings;

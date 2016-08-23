@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Class-Path: jetty-security-9.3.2.v20150730.jar jetty-webapp-9.3.2.v201
+ 50730.jar websocket-server-9.3.2.v20150730.jar websocket-client-9.3.2
+ .v20150730.jar hamcrest-core-1.1.jar jetty-io-9.3.2.v20150730.jar jav
+ ax.servlet-api-3.1.0.jar slf4j-simple-1.7.12.jar websocket-common-9.3
+ .2.v20150730.jar jetty-server-9.3.2.v20150730.jar gson-2.7.jar jetty-
+ xml-9.3.2.v20150730.jar jetty-http-9.3.2.v20150730.jar websocket-api-
+ 9.3.2.v20150730.jar websocket-servlet-9.3.2.v20150730.jar json-simple
+ -1.1.1.jar spark-core-2.3.jar jetty-util-9.3.2.v20150730.jar junit-4.
+ 10.jar slf4j-api-1.7.12.jar jetty-servlet-9.3.2.v20150730.jar
+Main-Class: sprunth.dosfootball.Runner
+
