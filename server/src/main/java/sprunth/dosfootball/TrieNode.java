@@ -105,7 +105,8 @@ public class TrieNode
         ArrayList<String> retList = new ArrayList<String>();   //return null if there are no similar string
 
         //find the node that matches the prefix (input)
-        TrieNode prefixNode = search(input);
+        String searchStr = input.toLowerCase();
+        TrieNode prefixNode = search(searchStr);
 
         if(prefixNode != null)
         {
