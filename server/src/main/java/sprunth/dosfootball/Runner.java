@@ -219,6 +219,7 @@ public class Runner {
             {
                 curPlayer = graph.AddPlayer(playerName);
                 root.insert(playerName);                    //add new name into prefix tree for every new player
+                //TODO: check for things like: Zlatan Ibrahimovic vs Zlatan Ibrahimović because scraped data sucks...
             }
             else
             {

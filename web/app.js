@@ -1,5 +1,6 @@
 /*jslint browser: true*/
 /*global $, jQuery, alert, console, xhr, createBloodhound*/
+var SERVER_URL = 'http://localhost:4567/Suggest'; //54.164.112.121
 
 var onReceivePath = function (data) {
   "use strict";
@@ -22,21 +23,11 @@ var onServerBusy = function () {
 $(document).ready(function () {
   "use strict";
 
-  //  $.ajax({
-  //    url: 'http://localhost:4567/Suggest?baseStr=W',
-  //    success: function (data) {
-  //      console.log(data)
-  //    },
-  //    error: function (d) {
-  //      console.log(d);
-  //    }
-  //  });
-
   var playerNames1 = new Bloodhound({
     queryTokenizer: Bloodhound.tokenizers.whitespace,
     datumTokenizer: Bloodhound.tokenizers.whitespace,
     remote: {
-      url: 'http://54.164.112.121:4567/Suggest',
+      url: SERVER_URL,
       prepare: function (query, settings) {
         settings.url += "?baseStr=" + query;
         return settings;
@@ -85,7 +76,17 @@ $('#calculatebutton').on('click', function (e) {
 
   e.preventDefault();
 
+  var queryParams = {
+    p1: $("#firstplayerinput").val(),
+    p2: $("#secondplayerinput").val(),
+  }
   setTimeout(function () {
+    //ping server for degrees of separation
+    $.ajax({
+      url: SERVER_URL,
+      data: queryParams,
+      success: onReceivePath(response),
+    });
     onReceivePath("path text");
     //onServerBusy();
   }, 2000);
