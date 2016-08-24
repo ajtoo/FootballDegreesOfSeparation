@@ -1,6 +1,6 @@
 /*jslint browser: true*/
 /*global $, jQuery, alert, console, xhr, createBloodhound*/
-var SERVER_URL = 'http://localhost:4567/Suggest'; //54.164.112.121
+var SERVER_URL = 'http://54.164.112.121:4567';
 
 var onReceivePath = function (data) {
   "use strict";
@@ -27,7 +27,7 @@ $(document).ready(function () {
     queryTokenizer: Bloodhound.tokenizers.whitespace,
     datumTokenizer: Bloodhound.tokenizers.whitespace,
     remote: {
-      url: SERVER_URL,
+      url: SERVER_URL + "/Suggest",
       prepare: function (query, settings) {
         settings.url += "?baseStr=" + query;
         return settings;
@@ -69,26 +69,31 @@ $('#calculatebutton').on('click', function (e) {
   var $this = $(this),
     $form = $('#playerinputform');
 
-  $('#resultpanel').collapse('hide');
-  $('#errorpanel').collapse('hide');
-
   $this.button('loading');
 
   e.preventDefault();
 
+  //ping server for path
   var queryParams = {
     p1: $("#firstplayerinput").val(),
     p2: $("#secondplayerinput").val(),
-  }
-  setTimeout(function () {
-    //ping server for degrees of separation
-    $.ajax({
-      url: SERVER_URL,
-      data: queryParams,
-      success: onReceivePath(response),
-    });
-    onReceivePath("path text");
-    //onServerBusy();
-  }, 2000);
+  };
 
+  $.get(SERVER_URL + "/DegreeOfSeparation", queryParams, onReceivePath).fail(function () {
+    "use strict";
+
+    // set result panel title
+    $("#resultheader").html($("#firstplayerinput").val() + " To " + $("#secondplayerinput").val());
+
+    $("#pathtext").html("Error: One or more invalid players requested");
+
+    $('#resultpanel').collapse('show');
+    $('#calculatebutton').button('reset');
+  });
+
+  //arbitrary wait time to close text
+  setTimeout(function () {
+    $('#resultpanel').collapse('hide');
+    $('#errorpanel').collapse('hide');
+  }, 60000);
 });

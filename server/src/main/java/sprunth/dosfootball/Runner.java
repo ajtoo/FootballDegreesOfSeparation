@@ -60,8 +60,8 @@ public class Runner {
 
             String p1Name = queryValues.value("p1");
             String p2Name = queryValues.value("p2");
-            p1Name = p1Name.substring(1, p1Name.length()-1);
-            p2Name = p2Name.substring(1, p2Name.length()-1);
+            p1Name = p1Name.substring(0, p1Name.length());
+            p2Name = p2Name.substring(0, p2Name.length());
 
             Player p1 = graph.GetPlayer(p1Name);
             Player p2 = graph.GetPlayer(p2Name);
