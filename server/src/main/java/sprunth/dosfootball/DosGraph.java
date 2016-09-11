@@ -28,9 +28,7 @@ public class DosGraph {
 
     public ArrayList<Player> FindDegreesOfSeparation(Player p1, Player p2)
     {
-        ArrayList<Player> path = BidirectionalBFS(p1, p2);
-
-        return path;
+        return BidirectionalBFS(p1, p2);
     }
 
 //    private ArrayList<Player> BFSSearch(Player p1, Player p2)

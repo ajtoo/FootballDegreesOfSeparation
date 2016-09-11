@@ -1,14 +1,10 @@
 package sprunth.dosfootball;
 
-import javafx.util.Pair;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import spark.HaltException;
 import spark.QueryParamsMap;
 import spark.Spark;
-import sun.awt.image.ImageWatched;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -88,8 +84,7 @@ public class Runner {
                 Spark.halt(400, "Invalid Request");
             }
             String baseStr = queryValues.value("baseStr");
-            String ret = root.topSuggestions(baseStr);
-            return ret;
+            return root.topSuggestions(baseStr);
         });
     }
 
@@ -170,10 +165,8 @@ public class Runner {
             JSONObject jsonObj = (JSONObject) parser.parse(new FileReader("footballsquads.json"));
 
             //iterate over team entries
-            Iterator it = jsonObj.entrySet().iterator();
-            while(it.hasNext())
-            {
-                Map.Entry pair = (Map.Entry) it.next();
+            for (Object o : jsonObj.entrySet()) {
+                Map.Entry pair = (Map.Entry) o;
                 String teamName = (String) pair.getKey();
                 JSONArray playerArray = (JSONArray) pair.getValue();
 
@@ -201,19 +194,14 @@ public class Runner {
     private static void AddPlayersFromTeam(JSONArray playerArray)
     {
         //iterate over players in a given team and add them
-        Iterator playerIterator = playerArray.iterator();
-        while(playerIterator.hasNext())
-        {
-            String playerName = (String) playerIterator.next();
+        for (Object aPlayerArray : playerArray) {
+            String playerName = (String) aPlayerArray;
             Player curPlayer;
-            if(graph.GetPlayer(playerName) == null)
-            {
+            if (graph.GetPlayer(playerName) == null) {
                 curPlayer = graph.AddPlayer(playerName);
                 root.insert(playerName);                    //add new name into prefix tree for every new player
                 //TODO: check for things like: Zlatan Ibrahimovic vs Zlatan Ibrahimović because scraped data sucks...
-            }
-            else
-            {
+            } else {
                 curPlayer = graph.GetPlayer(playerName);
             }
         }
@@ -229,11 +217,9 @@ public class Runner {
         {
             String playerName = (String) playerIterator.next();
             curPlayer = graph.GetPlayer(playerName);
-            Iterator otherPlayerIterator = playerArray.iterator();
-            while(otherPlayerIterator.hasNext())
-            {
-                String linkPlayerName = (String) otherPlayerIterator.next();
-                if(linkPlayerName.equals(playerName))   //don't link player to himself
+            for (Object aPlayerArray : playerArray) {
+                String linkPlayerName = (String) aPlayerArray;
+                if (linkPlayerName.equals(playerName))   //don't link player to himself
                 {
                     continue;
                 }
