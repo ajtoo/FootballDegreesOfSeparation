@@ -30,8 +30,9 @@ public class Runner {
         graph = new DosGraph();
         root = new TrieNode();
 
-        System.out.print("Populating data structures...");
         //SampleRun();
+
+        System.out.print("Populating data structures...");
         long startTime = System.nanoTime();
         LoadPlayerGraph();
         long endTime = System.nanoTime();
@@ -95,30 +96,18 @@ public class Runner {
     private static void SampleRun()
     {
         TrieNode root = new TrieNode();
-        String convertTest = root.normalizeChars("Mandžukić");
-        System.out.println(convertTest);
+        //String convertTest = root.normalizeChars("Mandžukić");
+        //System.out.println(convertTest);
         LoadPlayerGraph();
 
-        Player start = graph.GetPlayer("Maicon");
-        Player link = graph.GetPlayer("Ashley Cole");
-        Player end = graph.GetPlayer("Brian Rowe");
+        Player start = graph.GetPlayer("Wayne Rooney");
+        //Player link = graph.GetPlayer("Ashley Cole");
+        Player end = graph.GetPlayer("Cristiano Ronaldo");
 
         ArrayList<Player> path = graph.FindDegreesOfSeparation(start, end);
 
         System.out.print("Degrees of Seperation: ");
         System.out.println(path.size() - 1);
-
-        ArrayList<String> nameList = new ArrayList<String>();
-        nameList.add("Sam Johnstone");
-        nameList.add("Ashley Cole");
-        nameList.add("Daley Blind");
-        nameList.add("Adnan Januzaj");
-        nameList.add("Ben Amos");
-        nameList.add("Mario Mandžukić");
-        nameList.add("Martín Cáceres");
-
-
-        root.populateTree(nameList);
 
        String suggestions = root.topSuggestions("M");
 
@@ -129,6 +118,8 @@ public class Runner {
         boolean success = (searchResult != null);
         System.out.println("Search status..." + success);
         PrintPath(path);
+
+        System.exit(0);
     }
 
     private static String GetPathString(ArrayList<Player> path) {

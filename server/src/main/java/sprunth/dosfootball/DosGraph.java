@@ -6,6 +6,7 @@ public class DosGraph {
 
     public Map<String, Player> PlayerIndex;
     public ArrayList<String> PlayerNamesWithQuotes;
+    private static final int MAX_SEARCH_DEPTH = 6;
 
     public DosGraph() {
         PlayerIndex = new HashMap<>();
@@ -80,28 +81,49 @@ public class DosGraph {
         queue1.add(initialPath1);
         queue2.add(initialPath2);
 
-        Player intersectingPlayer;
+        Player intersectingPlayer = null;
+        int intersectingPathLength = Integer.MAX_VALUE; // full path, to determine which to keep when multiple intersections
+        int intersectingDepthCutoff = Integer.MAX_VALUE; // 1 sided depth cutoff
+
         while (true)
         {
+
             ArrayList<Player> path1 = queue1.remove();
-            ArrayList<Player> path2 = queue2.remove();
-
             Player player1 = path1.get(path1.size()-1);
-            Player player2 = path2.get(path2.size()-1);
-
             pathToPlayer1.put(player1, path1);
-            pathToPlayer2.put(player2, path2);
-
             visited1.add(player1);
+
+            ArrayList<Player> path2 = queue2.remove();
+            Player player2 = path2.get(path2.size()-1);
+            pathToPlayer2.put(player2, path2);
             visited2.add(player2);
 
-            if (visited1.contains(player2))
-            {    intersectingPlayer = player2;
-                break;
+            if (intersectingPlayer != null) {
+                if (path1.size() > intersectingDepthCutoff || path2.size() > intersectingDepthCutoff)
+                    break;
+                if (intersectingPathLength == 2) // 2 means there's a direct link, can't be any better routes
+                    break;
             }
+
             if (visited2.contains(player1)) {
-                intersectingPlayer = player1;
-                break;
+                // only keep the shortest intersection
+                int fullPathLength = pathToPlayer1.get(player1).size() + pathToPlayer2.get(player1).size() - 1;
+                if (fullPathLength < intersectingPathLength) {
+                    intersectingPlayer = player1;
+                    intersectingDepthCutoff = path1.size();
+                    intersectingPathLength = fullPathLength;
+                }
+                continue; // we can't break here since we have to evaluate all at this depth
+            }
+            if (visited1.contains(player2)) {
+                // only keep the shortest intersection
+                int fullPathLength = pathToPlayer1.get(player2).size() + pathToPlayer2.get(player2).size() - 1;
+                if (fullPathLength < intersectingPathLength) {
+                    intersectingPlayer = player2;
+                    intersectingDepthCutoff = path2.size();
+                    intersectingPathLength = fullPathLength;
+                }
+                continue; // we can't break here since we have to evaluate all at this depth
             }
 
             for (Player adjacent : player1.TeamLinks.keySet())
@@ -124,9 +146,17 @@ public class DosGraph {
                 queue2.add(newPath);
             }
 
-            if (path1.size() > 6)
+            // prevent deep deep search
+            if (path1.size() > MAX_SEARCH_DEPTH)
                 return new ArrayList<>();
+            if (queue1.isEmpty() || queue2.isEmpty())
+                if (intersectingPlayer != null)
+                    break;
+                else
+                    return new ArrayList<>();
         }
+
+        // we only get here when we find an intersecting player
 
         ArrayList<Player> path1 = pathToPlayer1.get(intersectingPlayer);
         ArrayList<Player> path2 = pathToPlayer2.get(intersectingPlayer);
