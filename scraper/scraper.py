@@ -1,6 +1,9 @@
 import bs4
-from urllib.request import urlopen
 import json
+import requests
+import requests_cache
+
+requests_cache.install_cache('footballdos_page_cache', backend='sqlite')
 
 BASE_URL = "http://www.footballsquads.co.uk/"
 
@@ -26,7 +29,11 @@ def main():
 
 
 def get_soup(url):
-    page = urlopen(url)				# get page to soupify
+    # get page to soupify, requests_cache works transparently
+    resp = requests.get(url)
+    if getattr(resp, 'from_cache', False):
+        print('fetched from cache:', url)
+    page = resp.content
     soup = bs4.BeautifulSoup(page, 'html.parser')
     return soup
 
