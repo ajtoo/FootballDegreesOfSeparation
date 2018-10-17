@@ -17,4 +17,9 @@ public class Player {
     {
         TeamLinks.put(p, team);
     }
+
+    @Override
+    public String toString() {
+        return Name;
+    }
 }

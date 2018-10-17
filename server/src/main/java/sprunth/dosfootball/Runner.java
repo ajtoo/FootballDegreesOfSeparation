@@ -1,14 +1,10 @@
 package sprunth.dosfootball;
 
-import javafx.util.Pair;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import spark.HaltException;
 import spark.QueryParamsMap;
 import spark.Spark;
-import sun.awt.image.ImageWatched;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -30,8 +26,9 @@ public class Runner {
         graph = new DosGraph();
         root = new TrieNode();
 
-        System.out.print("Populating data structures...");
         //SampleRun();
+
+        System.out.print("Populating data structures...");
         long startTime = System.nanoTime();
         LoadPlayerGraph();
         long endTime = System.nanoTime();
@@ -87,38 +84,25 @@ public class Runner {
                 Spark.halt(400, "Invalid Request");
             }
             String baseStr = queryValues.value("baseStr");
-            String ret = root.topSuggestions(baseStr);
-            return ret;
+            return root.topSuggestions(baseStr);
         });
     }
 
     private static void SampleRun()
     {
         TrieNode root = new TrieNode();
-        String convertTest = root.normalizeChars("Mandžukić");
-        System.out.println(convertTest);
+        //String convertTest = root.normalizeChars("Mandžukić");
+        //System.out.println(convertTest);
         LoadPlayerGraph();
 
-        Player start = graph.GetPlayer("Maicon");
-        Player link = graph.GetPlayer("Ashley Cole");
-        Player end = graph.GetPlayer("Brian Rowe");
+        Player start = graph.GetPlayer("Wayne Rooney");
+        //Player link = graph.GetPlayer("Ashley Cole");
+        Player end = graph.GetPlayer("Cristiano Ronaldo");
 
         ArrayList<Player> path = graph.FindDegreesOfSeparation(start, end);
 
         System.out.print("Degrees of Seperation: ");
         System.out.println(path.size() - 1);
-
-        ArrayList<String> nameList = new ArrayList<String>();
-        nameList.add("Sam Johnstone");
-        nameList.add("Ashley Cole");
-        nameList.add("Daley Blind");
-        nameList.add("Adnan Januzaj");
-        nameList.add("Ben Amos");
-        nameList.add("Mario Mandžukić");
-        nameList.add("Martín Cáceres");
-
-
-        root.populateTree(nameList);
 
        String suggestions = root.topSuggestions("M");
 
@@ -129,6 +113,8 @@ public class Runner {
         boolean success = (searchResult != null);
         System.out.println("Search status..." + success);
         PrintPath(path);
+
+        System.exit(0);
     }
 
     private static String GetPathString(ArrayList<Player> path) {
@@ -179,10 +165,8 @@ public class Runner {
             JSONObject jsonObj = (JSONObject) parser.parse(new FileReader("footballsquads.json"));
 
             //iterate over team entries
-            Iterator it = jsonObj.entrySet().iterator();
-            while(it.hasNext())
-            {
-                Map.Entry pair = (Map.Entry) it.next();
+            for (Object o : jsonObj.entrySet()) {
+                Map.Entry pair = (Map.Entry) o;
                 String teamName = (String) pair.getKey();
                 JSONArray playerArray = (JSONArray) pair.getValue();
 
@@ -210,19 +194,14 @@ public class Runner {
     private static void AddPlayersFromTeam(JSONArray playerArray)
     {
         //iterate over players in a given team and add them
-        Iterator playerIterator = playerArray.iterator();
-        while(playerIterator.hasNext())
-        {
-            String playerName = (String) playerIterator.next();
+        for (Object aPlayerArray : playerArray) {
+            String playerName = (String) aPlayerArray;
             Player curPlayer;
-            if(graph.GetPlayer(playerName) == null)
-            {
+            if (graph.GetPlayer(playerName) == null) {
                 curPlayer = graph.AddPlayer(playerName);
                 root.insert(playerName);                    //add new name into prefix tree for every new player
                 //TODO: check for things like: Zlatan Ibrahimovic vs Zlatan Ibrahimović because scraped data sucks...
-            }
-            else
-            {
+            } else {
                 curPlayer = graph.GetPlayer(playerName);
             }
         }
@@ -238,11 +217,9 @@ public class Runner {
         {
             String playerName = (String) playerIterator.next();
             curPlayer = graph.GetPlayer(playerName);
-            Iterator otherPlayerIterator = playerArray.iterator();
-            while(otherPlayerIterator.hasNext())
-            {
-                String linkPlayerName = (String) otherPlayerIterator.next();
-                if(linkPlayerName.equals(playerName))   //don't link player to himself
+            for (Object aPlayerArray : playerArray) {
+                String linkPlayerName = (String) aPlayerArray;
+                if (linkPlayerName.equals(playerName))   //don't link player to himself
                 {
                     continue;
                 }

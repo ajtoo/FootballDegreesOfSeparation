@@ -1,8 +1,6 @@
 package sprunth.dosfootball;
 
 import com.google.gson.Gson;
-import org.json.simple.JSONObject;
-import sun.text.normalizer.Trie;
 
 import java.text.Normalizer;
 import java.util.ArrayList;
@@ -18,16 +16,16 @@ public class TrieNode
 
     public TrieNode()
     {
-        children = new ArrayList<TrieNode>();
-        names = new ArrayList<String>();
+        children = new ArrayList<>();
+        names = new ArrayList<>();
         nodeChar = '\0';
         nodeVal = "";
     }
 
     public TrieNode(char nodeLabel, String prefix)
     {
-        children = new ArrayList<TrieNode>();
-        names = new ArrayList<String>();
+        children = new ArrayList<>();
+        names = new ArrayList<>();
         nodeChar = nodeLabel;
         nodeVal = prefix;
     }
@@ -108,8 +106,8 @@ public class TrieNode
 
         if(stringParts.length > 1)
         {
-            ArrayList<String> search1 = new ArrayList<String>();    //first name search results
-            ArrayList<String> search2 = new ArrayList<String>();    //last name search results
+            ArrayList<String> search1 = new ArrayList<>();    //first name search results
+            ArrayList<String> search2 = new ArrayList<>();    //last name search results
 
             //TODO: sanity check these...or do something since pos [0] and [1] not necessarily a given
             //search the second word then match with the first word
@@ -122,7 +120,7 @@ public class TrieNode
                 lastNameNode.getLeafStrings(search2);
             }
 
-            ArrayList<String> retList = new ArrayList<String>();
+            ArrayList<String> retList = new ArrayList<>();
             for(String entry : search1)
             {
                 if(search2.contains(entry))
@@ -136,7 +134,7 @@ public class TrieNode
         }
         else
         {
-            ArrayList<String> retList = new ArrayList<String>();   //return null if there are no similar string
+            ArrayList<String> retList = new ArrayList<>();   //return null if there are no similar string
             TrieNode prefixNode = search(searchStr);
 
             if(prefixNode != null)
@@ -160,14 +158,10 @@ public class TrieNode
                     fromPrefix.add(entry);
                 }
             }
-
-            return;
         }
         else    //otherwise, traverse down a child node
         {
-            for(ListIterator<TrieNode> it = children.listIterator(); it.hasNext(); )
-            {
-                TrieNode curChild = it.next();
+            for (TrieNode curChild : children) {
                 curChild.getLeafStrings(fromPrefix);
             }
         }
@@ -175,12 +169,10 @@ public class TrieNode
 
     private TrieNode findChildWithChar(char target)
     {
-        TrieNode curNode = null;
-        for(ListIterator<TrieNode> it = children.listIterator(); it.hasNext(); )
-        {
-            curNode = it.next();
-            if(curNode.nodeChar == target)
-            {
+        TrieNode curNode;
+        for (TrieNode aChildren : children) {
+            curNode = aChildren;
+            if (curNode.nodeChar == target) {
                 return curNode;
             }
         }
