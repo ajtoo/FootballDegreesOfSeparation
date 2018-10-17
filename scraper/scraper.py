@@ -1,16 +1,20 @@
 import bs4
-from urllib.request import urlopen
 import json
+import requests
+import requests_cache
+
+requests_cache.install_cache('footballdos_page_cache', backend='sqlite')
 
 BASE_URL = "http://www.footballsquads.co.uk/"
 
 
 def main():
     year_link_list = get_year_links()
-    # print(year_link_list)		#[DEBUG]
+    print(year_link_list)		#[DEBUG]
     team_players_dict = {}
     for year_link in year_link_list:
         team_links = get_teams_page_links(year_link)
+        print('processing', year_link)
         for team in team_links:
             team_name = get_team_name(team)
             player_list = get_players(team)
@@ -25,7 +29,11 @@ def main():
 
 
 def get_soup(url):
-    page = urlopen(url)				# get page to soupify
+    # get page to soupify, requests_cache works transparently
+    resp = requests.get(url)
+    if getattr(resp, 'from_cache', False):
+        print('fetched from cache:', url)
+    page = resp.content
     soup = bs4.BeautifulSoup(page, 'html.parser')
     return soup
 
@@ -36,12 +44,10 @@ def get_year_links():
     year_by_league = year_table.find_all('tr')
     year_links = []
     for entry in year_by_league:
-        td_pair = entry.find_all('td')
-        if len(td_pair) == 2:
-            href_list = td_pair[1].find_all('a', href=True)	 # get all the links in a subsection
-            for link in href_list:
-                year_links.append(BASE_URL + link['href'])
-                # print(link['href'])	#[DEBUG]
+        href_list = entry.find_all('a', href=True)	 # get all the links in a subsection
+        for link in href_list:
+            year_links.append(BASE_URL + link['href'])
+            # print(link['href'])	#[DEBUG]
     return year_links
 
 
@@ -92,6 +98,7 @@ def reconstruct_url(url, last_section_num):
     for i in range(1, last_section_num):
         reconstructed_url = reconstructed_url + "/" + divided_url[i]
     return reconstructed_url
+
 
 if __name__ == '__main__':
     main()
